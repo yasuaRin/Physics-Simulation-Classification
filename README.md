@@ -223,16 +223,12 @@ The framework organizes all physics simulations into 4 core types, each with pro
 
 ### Option 1: View the Live Demo (No Installation Required)
 
-1. **Open the web application:**
-   - Double-click `index.html` in the Classification folder
-   - Or open in any modern web browser
+**[🚀 Open Live Demo](https://physics-simulation-classification.vercel.app/)**
 
-2. **Explore the interface:**
-   - **Overview Tab:** Learn about the 4 simulation types
-   - **Classification Tab:** See all 12 example simulations
-   - **Calculator Tab:** Calculate time savings for custom scenarios
-   - **Live Demo Tab:** Interactive projectile motion simulation
-   - **Downloads Tab:** Access all documentation files
+Or run locally:
+1. Download and extract this repository
+2. Double-click `index.html` in the Classification folder
+3. Or open in any modern web browser
 
 ### Option 2: Run Locally with a Web Server
 
@@ -420,4 +416,4 @@ This project is released under the MIT License. Feel free to use, modify, and di
 
 ---
 
-**Start creating physics simulations faster. The template-based approach is ready to scale.** 
+**Start creating physics simulations faster. The template-based approach is ready to scale.**

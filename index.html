@@ -10,7 +10,7 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <h1>⚡ Physics Simulation Framework</h1>
+                <h1> Physics Simulation Framework</h1>
                 <p class="tagline">Template-Based Classification System</p>
             </div>
             <div class="status-bar">
@@ -24,7 +24,6 @@
             <button class="nav-tab" data-tab="table">Classification</button>
             <button class="nav-tab" data-tab="calculator">Calculator</button>
             <button class="nav-tab" data-tab="demo">Live Demo</button>
-
         </nav>
 
         <section id="overview" class="tab-section active">
@@ -156,12 +155,21 @@
         </section>
 
         <section id="demo" class="tab-section">
-            <h2>🎯 Live Demo: Projectile Motion</h2>
+            <h2 Live Demo: Motion Simulations</h2>
             <div class="demo-layout">
                 <div class="demo-main">
-                    <p class="demo-description">Interactive physics simulation demonstrating the <strong>Motion</strong> template with real-time trajectory visualization</p>
+                    <div class="demo-header">
+                        <p class="demo-description">Interactive physics simulation demonstrating four <strong>Motion</strong> template examples with real-time visualization</p>
+                        <div class="sim-type-selector">
+                            <button class="sim-type-btn active" data-sim-type="projectile">Projectile Motion</button>
+                            <button class="sim-type-btn" data-sim-type="linear">Linear Motion</button>
+                            <button class="sim-type-btn" data-sim-type="freefall">Free Fall</button>
+                            <button class="sim-type-btn" data-sim-type="inclined">Inclined Plane</button>
+                        </div>
+                    </div>
+                    
                     <div class="canvas-wrapper">
-                        <canvas id="simCanvas" width="900" height="500"></canvas>
+                        <canvas id="simCanvas" width="800" height="400"></canvas>
                         <div class="canvas-overlay" id="canvasInfo">
                             <span>Position: (<span id="posX">0</span>, <span id="posY">0</span>)</span>
                             <span>Velocity: <span id="velDisplay">0</span> m/s</span>
@@ -169,27 +177,29 @@
                             <span>Height: <span id="heightDisplay">0</span>m</span>
                         </div>
                     </div>
+                    
                     <div class="demo-controls">
                         <button class="demo-btn" onclick="startDemo()">▶ Start</button>
                         <button class="demo-btn" onclick="pauseDemo()">⏸ Pause</button>
                         <button class="demo-btn" onclick="resetDemo()">↻ Reset</button>
                     </div>
                 </div>
+                
                 <div class="demo-params">
                     <h3>⚙️ Parameters</h3>
                     <div class="param-group">
-                        <label>Initial Velocity (m/s)</label>
-                        <input type="range" id="velocity" min="20" max="100" value="60">
+                        <label>Velocity (m/s)</label>
+                        <input type="range" id="velocity" min="10" max="100" value="60">
                         <span id="velocityVal">60</span>
                     </div>
                     <div class="param-group">
-                        <label>Launch Angle (degrees)</label>
-                        <input type="range" id="angle" min="15" max="75" value="45">
+                        <label>Angle (degrees)</label>
+                        <input type="range" id="angle" min="0" max="90" value="45">
                         <span id="angleVal">45</span>
                     </div>
                     <div class="param-group">
                         <label>Gravity (m/s²)</label>
-                        <input type="range" id="gravity" min="5" max="15" value="10">
+                        <input type="range" id="gravity" min="1" max="20" value="10">
                         <span id="gravityVal">10</span>
                     </div>
                     <div class="param-group">
@@ -197,11 +207,15 @@
                         <input type="range" id="simSpeed" min="1" max="10" value="3">
                         <span id="simSpeedVal">3x</span>
                     </div>
+                    
+                    <div class="sim-info" id="simInfo">
+                        <h4>Current Simulation: Projectile Motion</h4>
+                        <p>Equation: x = v₀t·cosθ, y = v₀t·sinθ - ½gt²</p>
+                        <p>Template Pattern: Time-based position updates</p>
+                    </div>
                 </div>
             </div>
         </section>
-
-
 
         <footer>
             <p>Framework supports 50+ simulations from 4 templates | ~80% code reuse | Built with modern web technologies</p>

@@ -10,6 +10,10 @@ let simSpeed = 3;
 let trail = [];
 let lastTime = 0;
 let animationId = null;
+let currentSimType = 'projectile';
+let objectMass = 1;
+let friction = 0.1;
+let inclineAngle = 30;
 
 // Load data on startup
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setupCalculatorInputs();
             setupDemoParams();
             setupTypeBoxes();
+            setupSimTypeButtons();
         })
         .catch(error => {
             console.error('Error loading data:', error);
@@ -65,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setupCalculatorInputs();
             setupDemoParams();
             setupTypeBoxes();
+            setupSimTypeButtons();
         });
 });
 
@@ -98,6 +104,54 @@ function setupTypeBoxes() {
             }, 100);
         });
     });
+}
+
+function setupSimTypeButtons() {
+    document.querySelectorAll('.sim-type-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.sim-type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentSimType = btn.dataset.simType;
+            updateSimInfo();
+            resetDemo();
+        });
+    });
+}
+
+function updateSimInfo() {
+    const info = document.getElementById('simInfo');
+    let title = '';
+    let equation = '';
+    let pattern = '';
+    
+    switch(currentSimType) {
+        case 'projectile':
+            title = 'Projectile Motion';
+            equation = 'x = v₀t·cosθ, y = v₀t·sinθ - ½gt²';
+            pattern = 'Time-based position updates with constant acceleration';
+            break;
+        case 'linear':
+            title = 'Linear Motion';
+            equation = 'x = x₀ + v·t';
+            pattern = 'Constant velocity position updates';
+            break;
+        case 'freefall':
+            title = 'Free Fall';
+            equation = 'h = h₀ - ½gt², v = gt';
+            pattern = 'Constant gravitational acceleration';
+            break;
+        case 'inclined':
+            title = 'Inclined Plane';
+            equation = 'a = g·sinθ - μg·cosθ, x = x₀ + ½at²';
+            pattern = 'Force resolution and friction';
+            break;
+    }
+    
+    info.innerHTML = `
+        <h4>Current Simulation: ${title}</h4>
+        <p><strong>Equation:</strong> ${equation}</p>
+        <p><strong>Template Pattern:</strong> ${pattern}</p>
+    `;
 }
 
 // Filter Controls
@@ -172,7 +226,7 @@ function calculateSavings() {
     document.getElementById('results').innerHTML = `
         <p><strong>Traditional Approach:</strong> ${traditionalTotal.toFixed(1)} hours</p>
         <p><strong>Template Approach:</strong> ${templateTotal.toFixed(1)} hours</p>
-        <p><strong>Time Saved:</strong> <span style="color: var(--success); font-weight: 700; font-size: 1.3rem;">${timeSaved.toFixed(1)} hours (${percentSaved}%)</span></p>
+        <p><strong>Time Saved:</strong> <span style="color: var(--success); font-weight: 700; font-size: 1.1rem;">${timeSaved.toFixed(1)} hours (${percentSaved}%)</span></p>
     `;
     
     drawSavingsChart(count, traditionalTotal, templateTotal);
@@ -185,23 +239,23 @@ function drawSavingsChart(count, traditional, template) {
     const tempWidth = (template / maxVal) * 100;
     
     chart.innerHTML = `
-        <h3 style="margin-bottom: 20px; color: var(--text); font-size: 1.3rem;">Time Comparison for ${count} Simulations</h3>
-        <div style="margin-bottom: 30px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="font-weight: 600; color: var(--text);">Traditional Approach</span>
-                <span style="font-weight: 700; color: #ef4444;">${traditional.toFixed(1)}h</span>
+        <h3 style="margin-bottom: 15px; color: var(--text); font-size: 1.1rem;">Time Comparison for ${count} Simulations</h3>
+        <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-weight: 600; color: var(--text); font-size: 0.9rem;">Traditional Approach</span>
+                <span style="font-weight: 700; color: #ef4444; font-size: 0.9rem;">${traditional.toFixed(1)}h</span>
             </div>
-            <div style="width: 100%; height: 40px; background: var(--bg-light); border-radius: 8px; overflow: hidden;">
-                <div style="width: ${tradWidth}%; height: 100%; background: linear-gradient(90deg, #ef4444, #dc2626); transition: width 0.6s; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; color: white; font-weight: 600;"></div>
+            <div style="width: 100%; height: 35px; background: var(--bg-light); border-radius: 6px; overflow: hidden;">
+                <div style="width: ${tradWidth}%; height: 100%; background: linear-gradient(90deg, #ef4444, #dc2626); transition: width 0.6s; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-weight: 600; font-size: 0.9rem;"></div>
             </div>
         </div>
         <div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="font-weight: 600; color: var(--text);">Template Approach</span>
-                <span style="font-weight: 700; color: var(--success);">${template.toFixed(1)}h</span>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-weight: 600; color: var(--text); font-size: 0.9rem;">Template Approach</span>
+                <span style="font-weight: 700; color: var(--success); font-size: 0.9rem;">${template.toFixed(1)}h</span>
             </div>
-            <div style="width: 100%; height: 40px; background: var(--bg-light); border-radius: 8px; overflow: hidden;">
-                <div style="width: ${tempWidth}%; height: 100%; background: linear-gradient(90deg, var(--success), #059669); transition: width 0.6s; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; color: white; font-weight: 600;"></div>
+            <div style="width: 100%; height: 35px; background: var(--bg-light); border-radius: 6px; overflow: hidden;">
+                <div style="width: ${tempWidth}%; height: 100%; background: linear-gradient(90deg, var(--success), #059669); transition: width 0.6s; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-weight: 600; font-size: 0.9rem;"></div>
             </div>
         </div>
     `;
@@ -236,6 +290,59 @@ function setupDemoParams() {
         simSpeed = parseInt(e.target.value);
         document.getElementById('simSpeedVal').textContent = `${simSpeed}x`;
     });
+    
+    updateSimInfo();
+}
+
+function calculateSimulationValues() {
+    let x, y, vx, vy, speed, height;
+    const scale = 3;
+    const canvas = document.getElementById('simCanvas');
+    const width = canvas.width;
+    const heightCanvas = canvas.height;
+    const groundY = heightCanvas - 80;
+    
+    switch(currentSimType) {
+        case 'projectile':
+            const angleRad = (angle * Math.PI) / 180;
+            vx = velocity * Math.cos(angleRad);
+            vy = velocity * Math.sin(angleRad) - gravity * demoTime;
+            x = 80 + (vx * demoTime * scale);
+            y = groundY - ((velocity * Math.sin(angleRad) * demoTime * scale) - (0.5 * gravity * demoTime * demoTime * scale * scale));
+            height = Math.max(0, ((velocity * Math.sin(angleRad) * demoTime) - (0.5 * gravity * demoTime * demoTime)));
+            break;
+            
+        case 'linear':
+            vx = velocity;
+            vy = 0;
+            x = 80 + (velocity * demoTime * scale);
+            y = groundY - 40;
+            height = 40 / scale;
+            break;
+            
+        case 'freefall':
+            vx = 0;
+            vy = gravity * demoTime;
+            x = width / 2;
+            y = groundY - ((100 * scale) - (0.5 * gravity * demoTime * demoTime * scale * scale));
+            height = Math.max(0, 100 - (0.5 * gravity * demoTime * demoTime));
+            break;
+            
+        case 'inclined':
+            const inclineRad = (inclineAngle * Math.PI) / 180;
+            const acceleration = gravity * Math.sin(inclineRad) - friction * gravity * Math.cos(inclineRad);
+            vx = velocity + acceleration * demoTime;
+            vy = 0;
+            x = 80 + (vx * demoTime * scale);
+            y = groundY - 40 - (Math.tan(inclineRad) * (x - 80));
+            height = 40 / scale + (x - 80) * Math.tan(inclineRad) / scale;
+            break;
+    }
+    
+    speed = Math.sqrt(vx * vx + vy * vy);
+    y = Math.min(heightCanvas - 16, Math.max(16, y));
+    
+    return { x, y, vx, vy, speed, height };
 }
 
 function drawDemo() {
@@ -245,70 +352,38 @@ function drawDemo() {
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
     const height = canvas.height;
+    const groundY = height - 80;
     
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
     
-    // Draw sky with gradient
-    const skyGradient = ctx.createLinearGradient(0, 0, 0, height - 80);
-    skyGradient.addColorStop(0, '#1e3a8a');
-    skyGradient.addColorStop(1, '#0f172a');
-    ctx.fillStyle = skyGradient;
-    ctx.fillRect(0, 0, width, height - 80);
+    // Draw background based on simulation type
+    drawBackground(ctx, width, height);
     
-    // Draw stars
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    for (let i = 0; i < 50; i++) {
-        const sx = Math.random() * width;
-        const sy = Math.random() * (height - 80);
-        ctx.fillRect(sx, sy, 2, 2);
-    }
-    
-    // Draw ground with gradient
-    const groundGrad = ctx.createLinearGradient(0, height - 80, 0, height);
-    groundGrad.addColorStop(0, '#334155');
-    groundGrad.addColorStop(1, '#1e293b');
-    ctx.fillStyle = groundGrad;
-    ctx.fillRect(0, height - 80, width, 80);
-    
-    // Ground line
-    ctx.strokeStyle = '#6366f1';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(0, height - 80);
-    ctx.lineTo(width, height - 80);
-    ctx.stroke();
-    
-    // Calculate projectile position
-    const angleRad = (angle * Math.PI) / 180;
-    const vx = velocity * Math.cos(angleRad);
-    const vy = velocity * Math.sin(angleRad);
-    
-    const scale = 4; // Reduced scale for slower animation
-    const x = 80 + (vx * demoTime * scale);
-    const y = (height - 90) - ((vy * demoTime * scale) - (0.5 * gravity * demoTime * demoTime * scale * scale));
+    // Calculate current position and velocity
+    const simValues = calculateSimulationValues();
+    let { x, y, vx, vy, speed, height: simHeight } = simValues;
     
     // Add to trail
     if (demoRunning) {
         trail.push({ x, y });
-        if (trail.length > 100) trail.shift();
+        if (trail.length > 50) trail.shift();
     }
     
-    // Draw trajectory prediction (dotted line)
-    if (!demoRunning || trail.length === 0) {
-        ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
-        ctx.beginPath();
-        for (let t = 0; t <= 10; t += 0.1) {
-            const px = 80 + (vx * t * scale);
-            const py = (height - 90) - ((vy * t * scale) - (0.5 * gravity * t * t * scale * scale));
-            if (py >= height - 80) break;
-            if (t === 0) ctx.moveTo(px, py);
-            else ctx.lineTo(px, py);
-        }
-        ctx.stroke();
-        ctx.setLineDash([]);
+    // Draw specific elements for each simulation type
+    switch(currentSimType) {
+        case 'projectile':
+            drawProjectileElements(ctx, width, height, groundY);
+            break;
+        case 'linear':
+            drawLinearElements(ctx, width, height, groundY);
+            break;
+        case 'freefall':
+            drawFreefallElements(ctx, width, height, groundY);
+            break;
+        case 'inclined':
+            drawInclinedElements(ctx, width, height, groundY);
+            break;
     }
     
     // Draw trail
@@ -318,7 +393,7 @@ function drawDemo() {
         trailGrad.addColorStop(1, 'rgba(236, 72, 153, 0.8)');
         
         ctx.strokeStyle = trailGrad;
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 3;
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(trail[0].x, trail[0].y);
@@ -332,106 +407,271 @@ function drawDemo() {
             if (i % 3 === 0) {
                 ctx.fillStyle = `rgba(236, 72, 153, ${0.3 + (i / trail.length) * 0.5})`;
                 ctx.beginPath();
-                ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+                ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
                 ctx.fill();
             }
         });
     }
     
-    // Draw launch platform
-    ctx.fillStyle = '#6366f1';
-    ctx.fillRect(40, height - 100, 80, 20);
-    ctx.strokeStyle = '#4f46e5';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(40, height - 100, 80, 20);
-    
     // Update info display
-    const currentVx = vx;
-    const currentVy = vy - gravity * demoTime;
-    const currentSpeed = Math.sqrt(currentVx * currentVx + currentVy * currentVy);
-    const currentHeight = Math.max(0, ((vy * demoTime * scale) - (0.5 * gravity * demoTime * demoTime * scale * scale)) / scale);
-    
     document.getElementById('posX').textContent = Math.round(x);
     document.getElementById('posY').textContent = Math.round(height - y);
-    document.getElementById('velDisplay').textContent = currentSpeed.toFixed(1);
+    document.getElementById('velDisplay').textContent = speed.toFixed(1);
     document.getElementById('timeDisplay').textContent = demoTime.toFixed(2);
-    document.getElementById('heightDisplay').textContent = currentHeight.toFixed(1);
+    document.getElementById('heightDisplay').textContent = simHeight.toFixed(1);
     
-    // Draw projectile
-    if (x < width && y < height - 80 && y > 0) {
-        // Glow effect
-        const glowGrad = ctx.createRadialGradient(x, y, 0, x, y, 25);
-        glowGrad.addColorStop(0, 'rgba(236, 72, 153, 0.8)');
-        glowGrad.addColorStop(0.5, 'rgba(236, 72, 153, 0.3)');
-        glowGrad.addColorStop(1, 'rgba(236, 72, 153, 0)');
-        ctx.fillStyle = glowGrad;
-        ctx.beginPath();
-        ctx.arc(x, y, 25, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Main ball with gradient
-        const ballGrad = ctx.createRadialGradient(x - 5, y - 5, 0, x, y, 16);
-        ballGrad.addColorStop(0, '#fce7f3');
-        ballGrad.addColorStop(0.5, '#ec4899');
-        ballGrad.addColorStop(1, '#be185d');
-        ctx.fillStyle = ballGrad;
-        ctx.beginPath();
-        ctx.arc(x, y, 16, 0, Math.PI * 2);
-        ctx.fill();
-        
-        ctx.strokeStyle = '#9d174d';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        
-        // Velocity vector
-        if (Math.abs(currentVx) > 0.1 || Math.abs(currentVy) > 0.1) {
-            ctx.strokeStyle = '#fbbf24';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + currentVx * 2, y - currentVy * 2);
-            ctx.stroke();
-            
-            // Arrow head
-            const arrowX = x + currentVx * 2;
-            const arrowY = y - currentVy * 2;
-            const arrowAngle = Math.atan2(-currentVy, currentVx);
-            ctx.fillStyle = '#fbbf24';
-            ctx.beginPath();
-            ctx.moveTo(arrowX, arrowY);
-            ctx.lineTo(arrowX - 10 * Math.cos(arrowAngle - 0.3), arrowY + 10 * Math.sin(arrowAngle - 0.3));
-            ctx.lineTo(arrowX - 10 * Math.cos(arrowAngle + 0.3), arrowY + 10 * Math.sin(arrowAngle + 0.3));
-            ctx.closePath();
-            ctx.fill();
+    // Draw object
+    drawObject(ctx, x, y, vx, vy);
+    
+    // Check if simulation should end
+    if (demoRunning) {
+        const shouldEnd = checkSimulationEnd(x, y, width, height, groundY);
+        if (shouldEnd) {
+            pauseDemo();
         }
     }
 }
 
-// Fixed animation function with proper timing
+function drawBackground(ctx, width, height) {
+    const groundY = height - 80;
+    
+    // Draw sky with gradient
+    const skyGradient = ctx.createLinearGradient(0, 0, 0, groundY);
+    skyGradient.addColorStop(0, currentSimType === 'freefall' ? '#1e3a8a' : '#0f172a');
+    skyGradient.addColorStop(1, currentSimType === 'freefall' ? '#1e40af' : '#1e293b');
+    ctx.fillStyle = skyGradient;
+    ctx.fillRect(0, 0, width, groundY);
+    
+    // Draw stars (only for projectile)
+    if (currentSimType === 'projectile') {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        for (let i = 0; i < 30; i++) {
+            const sx = Math.random() * width;
+            const sy = Math.random() * groundY;
+            ctx.fillRect(sx, sy, 1.5, 1.5);
+        }
+    }
+    
+    // Draw ground
+    const groundGrad = ctx.createLinearGradient(0, groundY, 0, height);
+    groundGrad.addColorStop(0, '#334155');
+    groundGrad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = groundGrad;
+    ctx.fillRect(0, groundY, width, 80);
+    
+    // Ground line
+    ctx.strokeStyle = '#6366f1';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, groundY);
+    ctx.lineTo(width, groundY);
+    ctx.stroke();
+}
+
+function drawProjectileElements(ctx, width, height, groundY) {
+    const angleRad = (angle * Math.PI) / 180;
+    const vx = velocity * Math.cos(angleRad);
+    const scale = 3;
+    
+    // Draw launch platform
+    ctx.fillStyle = '#6366f1';
+    ctx.fillRect(40, groundY - 20, 80, 20);
+    
+    // Draw trajectory prediction
+    if (!demoRunning || trail.length === 0) {
+        ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        for (let t = 0; t <= 10; t += 0.1) {
+            const px = 80 + (vx * t * scale);
+            const py = groundY - ((velocity * Math.sin(angleRad) * t * scale) - (0.5 * gravity * t * t * scale * scale));
+            if (py >= groundY) break;
+            if (t === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+}
+
+function drawLinearElements(ctx, width, height, groundY) {
+    // Draw track
+    ctx.strokeStyle = '#6366f1';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(80, groundY - 40);
+    ctx.lineTo(width - 80, groundY - 40);
+    ctx.stroke();
+    
+    // Draw track markings
+    ctx.strokeStyle = 'rgba(99, 102, 241, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 10]);
+    ctx.beginPath();
+    ctx.moveTo(80, groundY - 40);
+    ctx.lineTo(width - 80, groundY - 40);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Draw start and end markers
+    ctx.fillStyle = '#10b981';
+    ctx.beginPath();
+    ctx.arc(80, groundY - 40, 6, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(width - 80, groundY - 40, 6, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawFreefallElements(ctx, width, height, groundY) {
+    // Draw building or platform
+    const platformX = width / 2;
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(platformX - 40, groundY - 100, 80, 100);
+    
+    // Draw platform top
+    ctx.fillStyle = '#6366f1';
+    ctx.fillRect(platformX - 50, groundY - 100, 100, 10);
+    
+    // Draw height indicator
+    ctx.strokeStyle = 'rgba(99, 102, 241, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    ctx.beginPath();
+    ctx.moveTo(platformX, groundY - 100);
+    ctx.lineTo(platformX, groundY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Draw height label
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = '12px Arial';
+    ctx.fillText('100m', platformX + 10, groundY - 50);
+}
+
+function drawInclinedElements(ctx, width, height, groundY) {
+    const inclineRad = (inclineAngle * Math.PI) / 180;
+    const inclineLength = 400;
+    const inclineHeight = inclineLength * Math.sin(inclineRad);
+    const startX = 80;
+    const startY = groundY - 40;
+    
+    // Draw inclined plane
+    ctx.fillStyle = '#475569';
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(startX + inclineLength, startY);
+    ctx.lineTo(startX + inclineLength, startY - inclineHeight);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Draw plane surface
+    ctx.strokeStyle = '#6366f1';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(startX + inclineLength, startY - inclineHeight);
+    ctx.stroke();
+    
+    // Draw angle indicator
+    const arcRadius = 30;
+    ctx.strokeStyle = 'rgba(99, 102, 241, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(startX, startY, arcRadius, 0, inclineRad);
+    ctx.stroke();
+    
+    // Draw angle label
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = '12px Arial';
+    ctx.fillText(`${inclineAngle}°`, startX + 20, startY - 15);
+    
+    // Draw friction indicator
+    if (friction > 0) {
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
+        ctx.fillRect(startX + 100, startY - 10, 200, 5);
+    }
+}
+
+function drawObject(ctx, x, y, vx, vy) {
+    if (x < 0 || x > ctx.canvas.width || y < 0 || y > ctx.canvas.height) return;
+    
+    // Glow effect
+    const glowGrad = ctx.createRadialGradient(x, y, 0, x, y, 20);
+    glowGrad.addColorStop(0, 'rgba(236, 72, 153, 0.6)');
+    glowGrad.addColorStop(1, 'rgba(236, 72, 153, 0)');
+    ctx.fillStyle = glowGrad;
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Main ball
+    const ballGrad = ctx.createRadialGradient(x - 5, y - 5, 0, x, y, 12);
+    ballGrad.addColorStop(0, '#fce7f3');
+    ballGrad.addColorStop(0.5, '#ec4899');
+    ballGrad.addColorStop(1, '#be185d');
+    ctx.fillStyle = ballGrad;
+    ctx.beginPath();
+    ctx.arc(x, y, 12, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Ball border
+    ctx.strokeStyle = '#9d174d';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Velocity vector
+    if (Math.abs(vx) > 0.1 || Math.abs(vy) > 0.1) {
+        const vectorScale = 2;
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + vx * vectorScale, y - vy * vectorScale);
+        ctx.stroke();
+        
+        // Arrow head
+        const arrowX = x + vx * vectorScale;
+        const arrowY = y - vy * vectorScale;
+        const arrowAngle = Math.atan2(-vy, vx);
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.moveTo(arrowX, arrowY);
+        ctx.lineTo(arrowX - 8 * Math.cos(arrowAngle - 0.3), arrowY + 8 * Math.sin(arrowAngle - 0.3));
+        ctx.lineTo(arrowX - 8 * Math.cos(arrowAngle + 0.3), arrowY + 8 * Math.sin(arrowAngle + 0.3));
+        ctx.closePath();
+        ctx.fill();
+    }
+}
+
+function checkSimulationEnd(x, y, width, height, groundY) {
+    switch(currentSimType) {
+        case 'projectile':
+            return y >= groundY || x >= width || demoTime > 20;
+        case 'linear':
+            return x >= width - 80 || demoTime > 10;
+        case 'freefall':
+            return y >= groundY || demoTime > 5;
+        case 'inclined':
+            return x >= width - 80 || demoTime > 15;
+    }
+    return false;
+}
+
 function animate(currentTime) {
     if (!demoRunning) return;
     
-    // Calculate delta time for smooth animation
     if (!lastTime) lastTime = currentTime;
-    const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+    const deltaTime = (currentTime - lastTime) / 1000;
     
-    // Update time based on simulation speed
     demoTime += deltaTime * (simSpeed / 3);
+    drawDemo();
+    lastTime = currentTime;
     
-    // Check if projectile has landed
-    const angleRad = (angle * Math.PI) / 180;
-    const vy = velocity * Math.sin(angleRad);
-    const flightTime = (2 * vy) / gravity;
-    
-    if (demoTime < flightTime) {
-        drawDemo();
-        lastTime = currentTime;
-        animationId = requestAnimationFrame(animate);
-    } else {
-        demoRunning = false;
-        demoTime = flightTime; // Cap at landing time
-        drawDemo();
-    }
+    animationId = requestAnimationFrame(animate);
 }
 
 function startDemo() {
@@ -460,5 +700,3 @@ function resetDemo() {
     trail = [];
     drawDemo();
 }
-
-// Download Functions
