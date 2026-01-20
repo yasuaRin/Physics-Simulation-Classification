@@ -661,42 +661,54 @@ function checkSimulationEnd(x, y, width, height, groundY) {
     return false;
 }
 
+// Replace the existing animate, startDemo, pauseDemo, and resetDemo functions with these:
+
 function animate(currentTime) {
-    if (!demoRunning) return;
-    
     if (!lastTime) lastTime = currentTime;
-    const deltaTime = (currentTime - lastTime) / 1000;
     
-    demoTime += deltaTime * (simSpeed / 3);
-    drawDemo();
+    if (demoRunning) {
+        const deltaTime = (currentTime - lastTime) / 1000;
+        demoTime += deltaTime * (simSpeed / 3);
+        drawDemo();
+    }
+    
     lastTime = currentTime;
     
+    // Always request the next frame, even when paused
     animationId = requestAnimationFrame(animate);
 }
 
 function startDemo() {
     if (!demoRunning) {
-        if (demoTime === 0) {
-            trail = [];
-            drawDemo();
-        }
         demoRunning = true;
-        lastTime = 0;
-        animationId = requestAnimationFrame(animate);
+        // Don't reset lastTime here - keep it for smooth delta calculation
+        if (!animationId) {
+            lastTime = 0;
+            animationId = requestAnimationFrame(animate);
+        }
     }
 }
 
 function pauseDemo() {
     demoRunning = false;
+    // Don't cancel animation frame - let the loop continue but not update
+}
+
+function resetDemo() {
+    // Pause first
+    demoRunning = false;
+    
+    // Reset all simulation values
+    demoTime = 0;
+    trail = [];
+    lastTime = 0;
+    
+    // Cancel any existing animation frame
     if (animationId) {
         cancelAnimationFrame(animationId);
         animationId = null;
     }
-}
-
-function resetDemo() {
-    pauseDemo();
-    demoTime = 0;
-    trail = [];
+    
+    // Redraw the initial state
     drawDemo();
 }
