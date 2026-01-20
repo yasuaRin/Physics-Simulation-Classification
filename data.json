@@ -1,0 +1,23 @@
+{
+  "simulations": [
+    { "type": "Motion", "example": "Linear motion", "vars": "position, velocity, time", "pattern": "update position each frame", "eq": "x = x₀ + v₀t" },
+    { "type": "Motion", "example": "Free fall", "vars": "gravity, height, time", "pattern": "constant acceleration", "eq": "h = h₀ - ½gt²" },
+    { "type": "Motion", "example": "Object on incline", "vars": "angle, friction, mass", "pattern": "resolve forces", "eq": "a = g·sinθ" },
+    { "type": "Force & Interaction", "example": "Push / pull force", "vars": "force, mass", "pattern": "F = ma", "eq": "F = m·a" },
+    { "type": "Force & Interaction", "example": "Collision", "vars": "velocity, mass", "pattern": "momentum change", "eq": "m₁v₁ + m₂v₂ = m₁v₁' + m₂v₂'" },
+    { "type": "Force & Interaction", "example": "Tension in rope", "vars": "tension, mass", "pattern": "net force balance", "eq": "T = m(g ± a)" },
+    { "type": "Pressure & Fluids", "example": "Pressure in liquid", "vars": "depth, density", "pattern": "P = ρgh", "eq": "P = ρ·g·h" },
+    { "type": "Pressure & Fluids", "example": "Force on surface", "vars": "area, pressure", "pattern": "F = PA", "eq": "F = P·A" },
+    { "type": "Pressure & Fluids", "example": "Hydraulic system", "vars": "piston area", "pattern": "pressure transmission", "eq": "P₁ = P₂" },
+    { "type": "Energy & Dynamics", "example": "Work done by force", "vars": "force, distance", "pattern": "W = F·d", "eq": "W = F·d·cosθ" },
+    { "type": "Energy & Dynamics", "example": "Kinetic energy", "vars": "mass, velocity", "pattern": "½mv²", "eq": "KE = ½m·v²" },
+    { "type": "Energy & Dynamics", "example": "Energy conversion", "vars": "height, speed", "pattern": "conservation", "eq": "PE₁ + KE₁ = PE₂ + KE₂" }
+  ],
+  "devTimes": {
+    "motion": { "first": 4, "additional": 0.5 },
+    "force": { "first": 4, "additional": 0.5 },
+    "pressure": { "first": 3.5, "additional": 0.4 },
+    "energy": { "first": 4, "additional": 0.5 },
+    "all": { "first": 16, "additional": 0.5 }
+  }
+}

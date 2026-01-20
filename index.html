@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Simulation Framework</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>⚡ Physics Simulation Framework</h1>
+                <p class="tagline">Template-Based Classification System</p>
+            </div>
+            <div class="status-bar">
+                <span class="status-item">✓ Status: Complete</span>
+                <span class="status-item">📅 Deadline: Jan 20, 2025 | 2:00 PM KST</span>
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="overview">Overview</button>
+            <button class="nav-tab" data-tab="table">Classification</button>
+            <button class="nav-tab" data-tab="calculator">Calculator</button>
+            <button class="nav-tab" data-tab="demo">Live Demo</button>
+
+        </nav>
+
+        <section id="overview" class="tab-section active">
+            <h2>Simulation Types</h2>
+            <div class="types-grid">
+                <div class="type-box" data-type="motion">
+                    <div class="type-icon">M</div>
+                    <h3>Motion</h3>
+                    <p class="type-pattern">Time-based position updates</p>
+                    <ul class="type-examples">
+                        <li>Linear motion</li>
+                        <li>Free fall</li>
+                        <li>Incline movement</li>
+                    </ul>
+                    <div class="type-details">
+                        <p><strong>Key Equation:</strong> x = x₀ + v₀t</p>
+                        <p><strong>Reusable Components:</strong> Time integrator, position tracker</p>
+                    </div>
+                </div>
+                <div class="type-box" data-type="force">
+                    <div class="type-icon">F</div>
+                    <h3>Force & Interaction</h3>
+                    <p class="type-pattern">F = ma calculations</p>
+                    <ul class="type-examples">
+                        <li>Collision</li>
+                        <li>Tension</li>
+                        <li>Push/pull</li>
+                    </ul>
+                    <div class="type-details">
+                        <p><strong>Key Equation:</strong> F = m·a</p>
+                        <p><strong>Reusable Components:</strong> Force solver, collision detector</p>
+                    </div>
+                </div>
+                <div class="type-box" data-type="pressure">
+                    <div class="type-icon">P</div>
+                    <h3>Pressure & Fluids</h3>
+                    <p class="type-pattern">P = ρgh</p>
+                    <ul class="type-examples">
+                        <li>Liquid pressure</li>
+                        <li>Hydraulic system</li>
+                        <li>Force on surface</li>
+                    </ul>
+                    <div class="type-details">
+                        <p><strong>Key Equation:</strong> P = ρ·g·h</p>
+                        <p><strong>Reusable Components:</strong> Pressure calculator, fluid engine</p>
+                    </div>
+                </div>
+                <div class="type-box" data-type="energy">
+                    <div class="type-icon">E</div>
+                    <h3>Energy & Dynamics</h3>
+                    <p class="type-pattern">Conservation equations</p>
+                    <ul class="type-examples">
+                        <li>Work</li>
+                        <li>Kinetic energy</li>
+                        <li>Energy conversion</li>
+                    </ul>
+                    <div class="type-details">
+                        <p><strong>Key Equation:</strong> KE = ½m·v²</p>
+                        <p><strong>Reusable Components:</strong> Energy tracker, conservation checker</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="table" class="tab-section">
+            <h2>Classification Table</h2>
+            <div class="table-header">
+                <div class="filter-controls">
+                    <button class="filter-tag active" data-filter="all">All</button>
+                    <button class="filter-tag" data-filter="Motion">Motion</button>
+                    <button class="filter-tag" data-filter="Force">Force</button>
+                    <button class="filter-tag" data-filter="Pressure">Pressure</button>
+                    <button class="filter-tag" data-filter="Energy">Energy</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search simulations...">
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Example</th>
+                            <th>Key Variables</th>
+                            <th>Shared Pattern</th>
+                            <th>Equation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div class="table-stats">
+                <span id="tableCount">12 simulations shown</span>
+            </div>
+        </section>
+
+        <section id="calculator" class="tab-section">
+            <h2>Scalability Calculator</h2>
+            <div class="calc-layout">
+                <div class="calc-form">
+                    <div class="input-group">
+                        <label>Number of simulations</label>
+                        <input type="range" id="simCountRange" min="1" max="50" value="10">
+                        <input type="number" id="simCount" min="1" max="50" value="10">
+                    </div>
+                    <div class="input-group">
+                        <label>Template type</label>
+                        <select id="templateType">
+                            <option value="all">All Types (Average)</option>
+                            <option value="motion">Motion</option>
+                            <option value="force">Force & Interaction</option>
+                            <option value="pressure">Pressure & Fluids</option>
+                            <option value="energy">Energy & Dynamics</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Traditional time per simulation (hours)</label>
+                        <input type="range" id="tradTimeRange" min="1" max="10" step="0.5" value="5">
+                        <input type="number" id="tradTime" min="1" step="0.5" value="5">
+                    </div>
+                    <button class="calc-btn" onclick="calculateSavings()">Calculate Savings</button>
+                </div>
+                <div id="results" class="calc-results">
+                    <p class="results-placeholder">Adjust parameters and click Calculate to see time savings</p>
+                </div>
+            </div>
+            <div class="savings-chart" id="savingsChart"></div>
+        </section>
+
+        <section id="demo" class="tab-section">
+            <h2>🎯 Live Demo: Projectile Motion</h2>
+            <div class="demo-layout">
+                <div class="demo-main">
+                    <p class="demo-description">Interactive physics simulation demonstrating the <strong>Motion</strong> template with real-time trajectory visualization</p>
+                    <div class="canvas-wrapper">
+                        <canvas id="simCanvas" width="900" height="500"></canvas>
+                        <div class="canvas-overlay" id="canvasInfo">
+                            <span>Position: (<span id="posX">0</span>, <span id="posY">0</span>)</span>
+                            <span>Velocity: <span id="velDisplay">0</span> m/s</span>
+                            <span>Time: <span id="timeDisplay">0.00</span>s</span>
+                            <span>Height: <span id="heightDisplay">0</span>m</span>
+                        </div>
+                    </div>
+                    <div class="demo-controls">
+                        <button class="demo-btn" onclick="startDemo()">▶ Start</button>
+                        <button class="demo-btn" onclick="pauseDemo()">⏸ Pause</button>
+                        <button class="demo-btn" onclick="resetDemo()">↻ Reset</button>
+                    </div>
+                </div>
+                <div class="demo-params">
+                    <h3>⚙️ Parameters</h3>
+                    <div class="param-group">
+                        <label>Initial Velocity (m/s)</label>
+                        <input type="range" id="velocity" min="20" max="100" value="60">
+                        <span id="velocityVal">60</span>
+                    </div>
+                    <div class="param-group">
+                        <label>Launch Angle (degrees)</label>
+                        <input type="range" id="angle" min="15" max="75" value="45">
+                        <span id="angleVal">45</span>
+                    </div>
+                    <div class="param-group">
+                        <label>Gravity (m/s²)</label>
+                        <input type="range" id="gravity" min="5" max="15" value="10">
+                        <span id="gravityVal">10</span>
+                    </div>
+                    <div class="param-group">
+                        <label>Simulation Speed</label>
+                        <input type="range" id="simSpeed" min="1" max="10" value="3">
+                        <span id="simSpeedVal">3x</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <footer>
+            <p>Framework supports 50+ simulations from 4 templates | ~80% code reuse | Built with modern web technologies</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
